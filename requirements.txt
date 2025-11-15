@@ -1,0 +1,13 @@
+# Reef Manager PRO - Wymagane pakiety Python
+
+# GUI Framework
+PyQt6==6.6.1
+
+# Baza danych ORM
+SQLAlchemy==2.0.25
+
+# Wykresy
+matplotlib==3.8.2
+
+# Testy (opcjonalne - tylko do developmentu)
+pytest==7.4.3
