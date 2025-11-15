@@ -10,7 +10,7 @@ from reef_manager.logic.services import AquariumService, BackupService, ExportSe
 from reef_manager.ui.aquarium_views import AquariumDetailsWidget
 
 
-class AddAquariumDialog(QtWidgets.QtWidgets.QDialog):
+class AddAquariumDialog(QtWidgets.QDialog):
     """Dialog do dodawania nowego akwarium."""
 
     def __init__(self, parent=None):
@@ -47,7 +47,7 @@ class AddAquariumDialog(QtWidgets.QtWidgets.QDialog):
         layout.addRow('Opis:', self.description_edit)
 
         # Przyciski
-        buttons = QtWidgets.QtWidgets.QDialogButtonBox(
+        buttons = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.StandardButton.Ok | QtWidgets.QDialogButtonBox.StandardButton.Cancel
         )
         buttons.accepted.connect(self.accept)
@@ -67,7 +67,7 @@ class AddAquariumDialog(QtWidgets.QtWidgets.QDialog):
         }
 
 
-class EditAquariumDialog(QtWidgets.QtWidgets.QDialog):
+class EditAquariumDialog(QtWidgets.QDialog):
     """Dialog do edycji akwarium."""
 
     def __init__(self, aquarium, parent=None):
@@ -102,7 +102,7 @@ class EditAquariumDialog(QtWidgets.QtWidgets.QDialog):
         layout.addRow('Opis:', self.description_edit)
 
         # Przyciski
-        buttons = QtWidgets.QtWidgets.QDialogButtonBox(
+        buttons = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.StandardButton.Ok | QtWidgets.QDialogButtonBox.StandardButton.Cancel
         )
         buttons.accepted.connect(self.accept)
