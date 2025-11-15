@@ -4,12 +4,7 @@ Widoki i zakładki dla akwariów w Reef Manager PRO.
 
 from datetime import datetime
 from typing import Optional
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QTableWidget, QTableWidgetItem,
-    QPushButton, QLabel, QLineEdit, QTextEdit, QDateTimeEdit, QComboBox,
-    QFormLayout, QMessageBox, QHeaderView, QGroupBox, QFileDialog
-)
-from PyQt6.QtCore import Qt, pyqtSignal, QDateTime
+from reef_manager.qt_compat import QtWidgets, QtCore, Signal
 
 from reef_manager.db.models import Aquarium, WaterMeasurement, AquariumEvent, Inhabitant
 from reef_manager.logic.services import MeasurementService, EventService, InhabitantService, ExportService
@@ -17,12 +12,12 @@ from reef_manager.logic.rules import RulesEngine
 from reef_manager.ui.charts import ChartWidget
 
 
-class AquariumDetailsWidget(QWidget):
+class AquariumDetailsWidget(QtWidgets.QWidget):
     """Widget do wyświetlania szczegółów akwarium w zakładkach."""
 
-    measurement_added = pyqtSignal()
-    event_added = pyqtSignal()
-    inhabitant_added = pyqtSignal()
+    measurement_added = Signal()
+    event_added = Signal()
+    inhabitant_added = Signal()
 
     def __init__(self, session, parent=None):
         super().__init__(parent)
@@ -38,10 +33,10 @@ class AquariumDetailsWidget(QWidget):
 
     def init_ui(self):
         """Inicjalizuje interfejs użytkownika."""
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
 
         # Zakładki
-        self.tabs = QTabWidget()
+        self.tabs = QtWidgets.QTabWidget()
         self.tabs.addTab(self.create_summary_tab(), 'Podsumowanie')
         self.tabs.addTab(self.create_parameters_tab(), 'Parametry')
         self.tabs.addTab(self.create_charts_tab(), 'Wykresy')
@@ -51,28 +46,28 @@ class AquariumDetailsWidget(QWidget):
         layout.addWidget(self.tabs)
         self.setLayout(layout)
 
-    def create_summary_tab(self) -> QWidget:
+    def create_summary_tab(self) -> QtWidgets.QWidget:
         """Tworzy zakładkę podsumowania."""
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
 
         # Informacje o akwarium
-        self.info_label = QLabel('Wybierz akwarium z listy')
+        self.info_label = QtWidgets.QLabel('Wybierz akwarium z listy')
         self.info_label.setStyleSheet('font-size: 14px; font-weight: bold; padding: 10px;')
         layout.addWidget(self.info_label)
 
         # Ostatnie parametry
-        params_group = QGroupBox('Ostatnie parametry')
-        self.params_layout = QVBoxLayout()
-        self.last_params_label = QLabel('Brak pomiarów')
+        params_group = QtWidgets.QGroupBox('Ostatnie parametry')
+        self.params_layout = QtWidgets.QVBoxLayout()
+        self.last_params_label = QtWidgets.QLabel('Brak pomiarów')
         self.params_layout.addWidget(self.last_params_label)
         params_group.setLayout(self.params_layout)
         layout.addWidget(params_group)
 
         # Alerty i sugestie
-        alerts_group = QGroupBox('Alerty i sugestie')
-        self.alerts_layout = QVBoxLayout()
-        self.alerts_label = QLabel('Brak alertów')
+        alerts_group = QtWidgets.QGroupBox('Alerty i sugestie')
+        self.alerts_layout = QtWidgets.QVBoxLayout()
+        self.alerts_label = QtWidgets.QLabel('Brak alertów')
         self.alerts_layout.addWidget(self.alerts_label)
         alerts_group.setLayout(self.alerts_layout)
         layout.addWidget(alerts_group)
@@ -81,54 +76,54 @@ class AquariumDetailsWidget(QWidget):
         widget.setLayout(layout)
         return widget
 
-    def create_parameters_tab(self) -> QWidget:
+    def create_parameters_tab(self) -> QtWidgets.QWidget:
         """Tworzy zakładkę parametrów."""
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
 
         # Formularz dodawania pomiaru
-        form_group = QGroupBox('Dodaj nowy pomiar')
-        form_layout = QFormLayout()
+        form_group = QtWidgets.QGroupBox('Dodaj nowy pomiar')
+        form_layout = QtWidgets.QFormLayout()
 
-        self.measurement_date_edit = QDateTimeEdit()
-        self.measurement_date_edit.setDateTime(QDateTime.currentDateTime())
+        self.measurement_date_edit = QtWidgets.QDateTimeEdit()
+        self.measurement_date_edit.setDateTime(QtCore.QDateTime.currentDateTime())
         self.measurement_date_edit.setCalendarPopup(True)
         form_layout.addRow('Data i godzina:', self.measurement_date_edit)
 
-        self.no3_edit = QLineEdit()
+        self.no3_edit = QtWidgets.QLineEdit()
         self.no3_edit.setPlaceholderText('np. 10.5')
         form_layout.addRow('NO3 (mg/l):', self.no3_edit)
 
-        self.po4_edit = QLineEdit()
+        self.po4_edit = QtWidgets.QLineEdit()
         self.po4_edit.setPlaceholderText('np. 0.05')
         form_layout.addRow('PO4 (mg/l):', self.po4_edit)
 
-        self.kh_edit = QLineEdit()
+        self.kh_edit = QtWidgets.QLineEdit()
         self.kh_edit.setPlaceholderText('np. 8.0')
         form_layout.addRow('KH (dKH):', self.kh_edit)
 
-        self.ph_edit = QLineEdit()
+        self.ph_edit = QtWidgets.QLineEdit()
         self.ph_edit.setPlaceholderText('np. 8.2')
         form_layout.addRow('pH:', self.ph_edit)
 
-        self.temp_edit = QLineEdit()
+        self.temp_edit = QtWidgets.QLineEdit()
         self.temp_edit.setPlaceholderText('np. 25.5')
         form_layout.addRow('Temperatura (°C):', self.temp_edit)
 
-        self.salinity_edit = QLineEdit()
+        self.salinity_edit = QtWidgets.QLineEdit()
         self.salinity_edit.setPlaceholderText('np. 1.025')
         form_layout.addRow('Zasolenie (SG):', self.salinity_edit)
 
-        self.nh3_edit = QLineEdit()
+        self.nh3_edit = QtWidgets.QLineEdit()
         self.nh3_edit.setPlaceholderText('np. 0.0')
         form_layout.addRow('NH3/NH4 (mg/l):', self.nh3_edit)
 
-        self.measurement_comment_edit = QTextEdit()
+        self.measurement_comment_edit = QtWidgets.QTextEdit()
         self.measurement_comment_edit.setMaximumHeight(60)
         self.measurement_comment_edit.setPlaceholderText('Opcjonalny komentarz...')
         form_layout.addRow('Komentarz:', self.measurement_comment_edit)
 
-        add_button = QPushButton('Dodaj pomiar')
+        add_button = QtWidgets.QPushButton('Dodaj pomiar')
         add_button.clicked.connect(self.add_measurement)
         form_layout.addRow('', add_button)
 
@@ -136,7 +131,7 @@ class AquariumDetailsWidget(QWidget):
         layout.addWidget(form_group)
 
         # Tabela pomiarów
-        self.measurements_table = QTableWidget()
+        self.measurements_table = QtWidgets.QTableWidget()
         self.measurements_table.setColumnCount(10)
         self.measurements_table.setHorizontalHeaderLabels([
             'Data', 'NO3', 'PO4', 'KH', 'pH', 'Temp', 'Zasolenie', 'NH3/NH4', 'Komentarz', 'Akcje'
@@ -147,10 +142,10 @@ class AquariumDetailsWidget(QWidget):
         widget.setLayout(layout)
         return widget
 
-    def create_charts_tab(self) -> QWidget:
+    def create_charts_tab(self) -> QtWidgets.QWidget:
         """Tworzy zakładkę wykresów."""
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
 
         self.chart_widget = ChartWidget()
         layout.addWidget(self.chart_widget)
@@ -158,21 +153,21 @@ class AquariumDetailsWidget(QWidget):
         widget.setLayout(layout)
         return widget
 
-    def create_events_tab(self) -> QWidget:
+    def create_events_tab(self) -> QtWidgets.QWidget:
         """Tworzy zakładkę wydarzeń."""
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
 
         # Formularz dodawania wydarzenia
-        form_group = QGroupBox('Dodaj nowe wydarzenie')
-        form_layout = QFormLayout()
+        form_group = QtWidgets.QGroupBox('Dodaj nowe wydarzenie')
+        form_layout = QtWidgets.QFormLayout()
 
-        self.event_date_edit = QDateTimeEdit()
-        self.event_date_edit.setDateTime(QDateTime.currentDateTime())
+        self.event_date_edit = QtWidgets.QDateTimeEdit()
+        self.event_date_edit.setDateTime(QtCore.QDateTime.currentDateTime())
         self.event_date_edit.setCalendarPopup(True)
         form_layout.addRow('Data i godzina:', self.event_date_edit)
 
-        self.event_type_combo = QComboBox()
+        self.event_type_combo = QtWidgets.QComboBox()
         self.event_type_combo.addItems([
             'Podmiana wody',
             'Czyszczenie odpieniacza',
@@ -186,12 +181,12 @@ class AquariumDetailsWidget(QWidget):
         ])
         form_layout.addRow('Typ wydarzenia:', self.event_type_combo)
 
-        self.event_desc_edit = QTextEdit()
+        self.event_desc_edit = QtWidgets.QTextEdit()
         self.event_desc_edit.setMaximumHeight(80)
         self.event_desc_edit.setPlaceholderText('Opis wydarzenia...')
         form_layout.addRow('Opis:', self.event_desc_edit)
 
-        add_event_button = QPushButton('Dodaj wydarzenie')
+        add_event_button = QtWidgets.QPushButton('Dodaj wydarzenie')
         add_event_button.clicked.connect(self.add_event)
         form_layout.addRow('', add_event_button)
 
@@ -199,7 +194,7 @@ class AquariumDetailsWidget(QWidget):
         layout.addWidget(form_group)
 
         # Tabela wydarzeń
-        self.events_table = QTableWidget()
+        self.events_table = QtWidgets.QTableWidget()
         self.events_table.setColumnCount(4)
         self.events_table.setHorizontalHeaderLabels(['Data', 'Typ', 'Opis', 'Akcje'])
         self.events_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
@@ -208,45 +203,45 @@ class AquariumDetailsWidget(QWidget):
         widget.setLayout(layout)
         return widget
 
-    def create_inhabitants_tab(self) -> QWidget:
+    def create_inhabitants_tab(self) -> QtWidgets.QWidget:
         """Tworzy zakładkę obsady."""
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
 
         # Formularz dodawania mieszkańca
-        form_group = QGroupBox('Dodaj nowego mieszkańca')
-        form_layout = QFormLayout()
+        form_group = QtWidgets.QGroupBox('Dodaj nowego mieszkańca')
+        form_layout = QtWidgets.QFormLayout()
 
-        self.species_edit = QLineEdit()
+        self.species_edit = QtWidgets.QLineEdit()
         self.species_edit.setPlaceholderText('np. Amphiprion ocellaris')
         form_layout.addRow('Gatunek/Nazwa:', self.species_edit)
 
-        self.inhabitant_type_combo = QComboBox()
+        self.inhabitant_type_combo = QtWidgets.QComboBox()
         self.inhabitant_type_combo.addItems([
             'Ryba', 'Koral', 'Ślimak', 'Krab', 'Krewetka', 'Inne'
         ])
         form_layout.addRow('Typ:', self.inhabitant_type_combo)
 
-        self.intro_date_edit = QDateTimeEdit()
-        self.intro_date_edit.setDateTime(QDateTime.currentDateTime())
+        self.intro_date_edit = QtWidgets.QDateTimeEdit()
+        self.intro_date_edit.setDateTime(QtCore.QDateTime.currentDateTime())
         self.intro_date_edit.setCalendarPopup(True)
         form_layout.addRow('Data wprowadzenia:', self.intro_date_edit)
 
-        self.quantity_edit = QLineEdit()
+        self.quantity_edit = QtWidgets.QLineEdit()
         self.quantity_edit.setText('1')
         self.quantity_edit.setPlaceholderText('1')
         form_layout.addRow('Ilość:', self.quantity_edit)
 
-        self.status_combo = QComboBox()
+        self.status_combo = QtWidgets.QComboBox()
         self.status_combo.addItems(['Aktywny', 'Padł', 'Przeniesiony'])
         form_layout.addRow('Status:', self.status_combo)
 
-        self.inhabitant_notes_edit = QTextEdit()
+        self.inhabitant_notes_edit = QtWidgets.QTextEdit()
         self.inhabitant_notes_edit.setMaximumHeight(60)
         self.inhabitant_notes_edit.setPlaceholderText('Notatki...')
         form_layout.addRow('Notatki:', self.inhabitant_notes_edit)
 
-        add_inhabitant_button = QPushButton('Dodaj mieszkańca')
+        add_inhabitant_button = QtWidgets.QPushButton('Dodaj mieszkańca')
         add_inhabitant_button.clicked.connect(self.add_inhabitant)
         form_layout.addRow('', add_inhabitant_button)
 
@@ -254,7 +249,7 @@ class AquariumDetailsWidget(QWidget):
         layout.addWidget(form_group)
 
         # Tabela obsady
-        self.inhabitants_table = QTableWidget()
+        self.inhabitants_table = QtWidgets.QTableWidget()
         self.inhabitants_table.setColumnCount(7)
         self.inhabitants_table.setHorizontalHeaderLabels([
             'Gatunek', 'Typ', 'Data wprowadzenia', 'Ilość', 'Status', 'Notatki', 'Akcje'
@@ -348,36 +343,36 @@ class AquariumDetailsWidget(QWidget):
         self.measurements_table.setRowCount(len(measurements))
 
         for row, measurement in enumerate(measurements):
-            self.measurements_table.setItem(row, 0, QTableWidgetItem(
+            self.measurements_table.setItem(row, 0, QtWidgets.QTableWidgetItem(
                 measurement.measurement_date.strftime('%Y-%m-%d %H:%M')
             ))
-            self.measurements_table.setItem(row, 1, QTableWidgetItem(
+            self.measurements_table.setItem(row, 1, QtWidgets.QTableWidgetItem(
                 str(measurement.no3) if measurement.no3 is not None else ''
             ))
-            self.measurements_table.setItem(row, 2, QTableWidgetItem(
+            self.measurements_table.setItem(row, 2, QtWidgets.QTableWidgetItem(
                 str(measurement.po4) if measurement.po4 is not None else ''
             ))
-            self.measurements_table.setItem(row, 3, QTableWidgetItem(
+            self.measurements_table.setItem(row, 3, QtWidgets.QTableWidgetItem(
                 str(measurement.kh) if measurement.kh is not None else ''
             ))
-            self.measurements_table.setItem(row, 4, QTableWidgetItem(
+            self.measurements_table.setItem(row, 4, QtWidgets.QTableWidgetItem(
                 str(measurement.ph) if measurement.ph is not None else ''
             ))
-            self.measurements_table.setItem(row, 5, QTableWidgetItem(
+            self.measurements_table.setItem(row, 5, QtWidgets.QTableWidgetItem(
                 str(measurement.temperature) if measurement.temperature is not None else ''
             ))
-            self.measurements_table.setItem(row, 6, QTableWidgetItem(
+            self.measurements_table.setItem(row, 6, QtWidgets.QTableWidgetItem(
                 str(measurement.salinity) if measurement.salinity is not None else ''
             ))
-            self.measurements_table.setItem(row, 7, QTableWidgetItem(
+            self.measurements_table.setItem(row, 7, QtWidgets.QTableWidgetItem(
                 str(measurement.nh3_nh4) if measurement.nh3_nh4 is not None else ''
             ))
-            self.measurements_table.setItem(row, 8, QTableWidgetItem(
+            self.measurements_table.setItem(row, 8, QtWidgets.QTableWidgetItem(
                 measurement.comment or ''
             ))
 
             # Przycisk usuwania
-            delete_btn = QPushButton('Usuń')
+            delete_btn = QtWidgets.QPushButton('Usuń')
             delete_btn.clicked.connect(lambda checked, m_id=measurement.id: self.delete_measurement(m_id))
             self.measurements_table.setCellWidget(row, 9, delete_btn)
 
@@ -398,14 +393,14 @@ class AquariumDetailsWidget(QWidget):
         self.events_table.setRowCount(len(events))
 
         for row, event in enumerate(events):
-            self.events_table.setItem(row, 0, QTableWidgetItem(
+            self.events_table.setItem(row, 0, QtWidgets.QTableWidgetItem(
                 event.event_date.strftime('%Y-%m-%d %H:%M')
             ))
-            self.events_table.setItem(row, 1, QTableWidgetItem(event.event_type))
-            self.events_table.setItem(row, 2, QTableWidgetItem(event.description))
+            self.events_table.setItem(row, 1, QtWidgets.QTableWidgetItem(event.event_type))
+            self.events_table.setItem(row, 2, QtWidgets.QTableWidgetItem(event.description))
 
             # Przycisk usuwania
-            delete_btn = QPushButton('Usuń')
+            delete_btn = QtWidgets.QPushButton('Usuń')
             delete_btn.clicked.connect(lambda checked, e_id=event.id: self.delete_event(e_id))
             self.events_table.setCellWidget(row, 3, delete_btn)
 
@@ -418,24 +413,24 @@ class AquariumDetailsWidget(QWidget):
         self.inhabitants_table.setRowCount(len(inhabitants))
 
         for row, inhabitant in enumerate(inhabitants):
-            self.inhabitants_table.setItem(row, 0, QTableWidgetItem(inhabitant.species_name))
-            self.inhabitants_table.setItem(row, 1, QTableWidgetItem(inhabitant.inhabitant_type))
-            self.inhabitants_table.setItem(row, 2, QTableWidgetItem(
+            self.inhabitants_table.setItem(row, 0, QtWidgets.QTableWidgetItem(inhabitant.species_name))
+            self.inhabitants_table.setItem(row, 1, QtWidgets.QTableWidgetItem(inhabitant.inhabitant_type))
+            self.inhabitants_table.setItem(row, 2, QtWidgets.QTableWidgetItem(
                 inhabitant.introduction_date.strftime('%Y-%m-%d')
             ))
-            self.inhabitants_table.setItem(row, 3, QTableWidgetItem(str(inhabitant.quantity)))
-            self.inhabitants_table.setItem(row, 4, QTableWidgetItem(inhabitant.status))
-            self.inhabitants_table.setItem(row, 5, QTableWidgetItem(inhabitant.notes or ''))
+            self.inhabitants_table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(inhabitant.quantity)))
+            self.inhabitants_table.setItem(row, 4, QtWidgets.QTableWidgetItem(inhabitant.status))
+            self.inhabitants_table.setItem(row, 5, QtWidgets.QTableWidgetItem(inhabitant.notes or ''))
 
             # Przycisk usuwania
-            delete_btn = QPushButton('Usuń')
+            delete_btn = QtWidgets.QPushButton('Usuń')
             delete_btn.clicked.connect(lambda checked, i_id=inhabitant.id: self.delete_inhabitant(i_id))
             self.inhabitants_table.setCellWidget(row, 6, delete_btn)
 
     def add_measurement(self):
         """Dodaje nowy pomiar."""
         if not self.aquarium:
-            QMessageBox.warning(self, 'Błąd', 'Nie wybrano akwarium')
+            QtWidgets.QMessageBox.warning(self, 'Błąd', 'Nie wybrano akwarium')
             return
 
         try:
@@ -453,7 +448,7 @@ class AquariumDetailsWidget(QWidget):
 
             # Walidacja - przynajmniej jeden parametr musi być podany
             if all(v is None for v in [no3, po4, kh, ph, temperature, salinity, nh3_nh4]):
-                QMessageBox.warning(self, 'Błąd', 'Podaj przynajmniej jeden parametr')
+                QtWidgets.QMessageBox.warning(self, 'Błąd', 'Podaj przynajmniej jeden parametr')
                 return
 
             # Dodaj pomiar
@@ -479,21 +474,21 @@ class AquariumDetailsWidget(QWidget):
             self.salinity_edit.clear()
             self.nh3_edit.clear()
             self.measurement_comment_edit.clear()
-            self.measurement_date_edit.setDateTime(QDateTime.currentDateTime())
+            self.measurement_date_edit.setDateTime(QtCore.QDateTime.currentDateTime())
 
             # Odśwież
             self.refresh_all()
             self.measurement_added.emit()
 
-            QMessageBox.information(self, 'Sukces', 'Pomiar dodany pomyślnie')
+            QtWidgets.QMessageBox.information(self, 'Sukces', 'Pomiar dodany pomyślnie')
 
         except ValueError as e:
-            QMessageBox.warning(self, 'Błąd', f'Nieprawidłowe dane: {str(e)}')
+            QtWidgets.QMessageBox.warning(self, 'Błąd', f'Nieprawidłowe dane: {str(e)}')
 
     def add_event(self):
         """Dodaje nowe wydarzenie."""
         if not self.aquarium:
-            QMessageBox.warning(self, 'Błąd', 'Nie wybrano akwarium')
+            QtWidgets.QMessageBox.warning(self, 'Błąd', 'Nie wybrano akwarium')
             return
 
         event_date = self.event_date_edit.dateTime().toPyDateTime()
@@ -501,7 +496,7 @@ class AquariumDetailsWidget(QWidget):
         description = self.event_desc_edit.toPlainText()
 
         if not description.strip():
-            QMessageBox.warning(self, 'Błąd', 'Podaj opis wydarzenia')
+            QtWidgets.QMessageBox.warning(self, 'Błąd', 'Podaj opis wydarzenia')
             return
 
         self.event_service.add_event(
@@ -513,23 +508,23 @@ class AquariumDetailsWidget(QWidget):
 
         # Wyczyść formularz
         self.event_desc_edit.clear()
-        self.event_date_edit.setDateTime(QDateTime.currentDateTime())
+        self.event_date_edit.setDateTime(QtCore.QDateTime.currentDateTime())
 
         # Odśwież
         self.refresh_events()
         self.event_added.emit()
 
-        QMessageBox.information(self, 'Sukces', 'Wydarzenie dodane pomyślnie')
+        QtWidgets.QMessageBox.information(self, 'Sukces', 'Wydarzenie dodane pomyślnie')
 
     def add_inhabitant(self):
         """Dodaje nowego mieszkańca."""
         if not self.aquarium:
-            QMessageBox.warning(self, 'Błąd', 'Nie wybrano akwarium')
+            QtWidgets.QMessageBox.warning(self, 'Błąd', 'Nie wybrano akwarium')
             return
 
         species_name = self.species_edit.text().strip()
         if not species_name:
-            QMessageBox.warning(self, 'Błąd', 'Podaj gatunek/nazwę')
+            QtWidgets.QMessageBox.warning(self, 'Błąd', 'Podaj gatunek/nazwę')
             return
 
         try:
@@ -554,50 +549,50 @@ class AquariumDetailsWidget(QWidget):
             self.species_edit.clear()
             self.quantity_edit.setText('1')
             self.inhabitant_notes_edit.clear()
-            self.intro_date_edit.setDateTime(QDateTime.currentDateTime())
+            self.intro_date_edit.setDateTime(QtCore.QDateTime.currentDateTime())
 
             # Odśwież
             self.refresh_inhabitants()
             self.inhabitant_added.emit()
 
-            QMessageBox.information(self, 'Sukces', 'Mieszkaniec dodany pomyślnie')
+            QtWidgets.QMessageBox.information(self, 'Sukces', 'Mieszkaniec dodany pomyślnie')
 
         except ValueError as e:
-            QMessageBox.warning(self, 'Błąd', f'Nieprawidłowe dane: {str(e)}')
+            QtWidgets.QMessageBox.warning(self, 'Błąd', f'Nieprawidłowe dane: {str(e)}')
 
     def delete_measurement(self, measurement_id: int):
         """Usuwa pomiar."""
-        reply = QMessageBox.question(
+        reply = QtWidgets.QMessageBox.question(
             self, 'Potwierdzenie',
             'Czy na pewno chcesz usunąć ten pomiar?',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No
         )
 
-        if reply == QMessageBox.StandardButton.Yes:
+        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
             self.measurement_service.delete_measurement(measurement_id)
             self.refresh_all()
 
     def delete_event(self, event_id: int):
         """Usuwa wydarzenie."""
-        reply = QMessageBox.question(
+        reply = QtWidgets.QMessageBox.question(
             self, 'Potwierdzenie',
             'Czy na pewno chcesz usunąć to wydarzenie?',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No
         )
 
-        if reply == QMessageBox.StandardButton.Yes:
+        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
             self.event_service.delete_event(event_id)
             self.refresh_events()
 
     def delete_inhabitant(self, inhabitant_id: int):
         """Usuwa mieszkańca."""
-        reply = QMessageBox.question(
+        reply = QtWidgets.QMessageBox.question(
             self, 'Potwierdzenie',
             'Czy na pewno chcesz usunąć tego mieszkańca?',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No
         )
 
-        if reply == QMessageBox.StandardButton.Yes:
+        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
             self.inhabitant_service.delete_inhabitant(inhabitant_id)
             self.refresh_inhabitants()
 

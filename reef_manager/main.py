@@ -3,13 +3,13 @@ Punkt wejścia aplikacji Reef Manager PRO.
 """
 
 import sys
-from PyQt6.QtWidgets import QApplication
+from reef_manager.qt_compat import QtWidgets
 from reef_manager.ui.main_window import MainWindow
 
 
 def main():
     """Główna funkcja aplikacji."""
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     # Ustawienia aplikacji
     app.setApplicationName('Reef Manager PRO')

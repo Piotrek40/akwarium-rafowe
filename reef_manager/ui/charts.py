@@ -1,11 +1,11 @@
 """
-Komponenty do wyświetlania wykresów w PyQt6.
+Komponenty do wyświetlania wykresów w PyQt6/PySide6.
 Używa matplotlib do rysowania wykresów parametrów wody.
 """
 
 from datetime import datetime, timedelta
 from typing import List, Optional
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QPushButton, QLabel
+from reef_manager.qt_compat import QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.dates as mdates
@@ -13,7 +13,7 @@ import matplotlib.dates as mdates
 from reef_manager.db.models import WaterMeasurement
 
 
-class ChartWidget(QWidget):
+class ChartWidget(QtWidgets.QWidget):
     """Widget do wyświetlania wykresów parametrów wody."""
 
     PARAMETERS = {
@@ -40,28 +40,28 @@ class ChartWidget(QWidget):
 
     def init_ui(self):
         """Inicjalizuje interfejs użytkownika."""
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
 
         # Panel kontrolny
-        control_panel = QHBoxLayout()
+        control_panel = QtWidgets.QHBoxLayout()
 
         # Wybór parametru
-        control_panel.addWidget(QLabel('Parametr:'))
-        self.param_combo = QComboBox()
+        control_panel.addWidget(QtWidgets.QLabel('Parametr:'))
+        self.param_combo = QtWidgets.QComboBox()
         for param_key, (param_name, unit) in self.PARAMETERS.items():
             display_name = f"{param_name} ({unit})" if unit else param_name
             self.param_combo.addItem(display_name, param_key)
         control_panel.addWidget(self.param_combo)
 
         # Wybór zakresu dat
-        control_panel.addWidget(QLabel('Zakres:'))
-        self.range_combo = QComboBox()
+        control_panel.addWidget(QtWidgets.QLabel('Zakres:'))
+        self.range_combo = QtWidgets.QComboBox()
         for range_name in self.DATE_RANGES.keys():
             self.range_combo.addItem(range_name)
         control_panel.addWidget(self.range_combo)
 
         # Przycisk odświeżania
-        self.refresh_button = QPushButton('Odśwież wykres')
+        self.refresh_button = QtWidgets.QPushButton('Odśwież wykres')
         self.refresh_button.clicked.connect(self.update_chart)
         control_panel.addWidget(self.refresh_button)
 
