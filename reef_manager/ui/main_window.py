@@ -3,7 +3,7 @@ Główne okno aplikacji Reef Manager PRO.
 """
 
 from datetime import datetime
-from reef_manager.qt_compat import QtWidgets, QtCore, Signal
+from reef_manager.qt_compat import QtWidgets, QtCore, Signal, qDateTime_to_python
 
 from reef_manager.db.database import get_database
 from reef_manager.logic.services import AquariumService, BackupService, ExportService
@@ -62,7 +62,7 @@ class AddAquariumDialog(QtWidgets.QDialog):
             'name': self.name_edit.text().strip(),
             'aquarium_type': self.type_combo.currentText(),
             'volume_liters': float(self.volume_edit.text()),
-            'start_date': self.start_date_edit.dateTime().toPyDateTime(),
+            'start_date': qDateTime_to_python(self.start_date_edit.dateTime()),
             'description': self.description_edit.toPlainText()
         }
 
@@ -125,7 +125,7 @@ class EditAquariumDialog(QtWidgets.QDialog):
             'name': self.name_edit.text().strip(),
             'aquarium_type': self.type_combo.currentText(),
             'volume_liters': float(self.volume_edit.text()),
-            'start_date': self.start_date_edit.dateTime().toPyDateTime(),
+            'start_date': qDateTime_to_python(self.start_date_edit.dateTime()),
             'description': self.description_edit.toPlainText()
         }
 

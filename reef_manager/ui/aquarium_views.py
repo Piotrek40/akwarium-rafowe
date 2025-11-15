@@ -4,7 +4,7 @@ Widoki i zakładki dla akwariów w Reef Manager PRO.
 
 from datetime import datetime
 from typing import Optional
-from reef_manager.qt_compat import QtWidgets, QtCore, Signal
+from reef_manager.qt_compat import QtWidgets, QtCore, Signal, qDateTime_to_python
 
 from reef_manager.db.models import Aquarium, WaterMeasurement, AquariumEvent, Inhabitant
 from reef_manager.logic.services import MeasurementService, EventService, InhabitantService, ExportService
@@ -434,7 +434,7 @@ class AquariumDetailsWidget(QtWidgets.QWidget):
             return
 
         try:
-            measurement_date = self.measurement_date_edit.dateTime().toPyDateTime()
+            measurement_date = qDateTime_to_python(self.measurement_date_edit.dateTime())
 
             # Pobierz wartości (mogą być puste)
             no3 = self._parse_float(self.no3_edit.text())
@@ -491,7 +491,7 @@ class AquariumDetailsWidget(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Błąd', 'Nie wybrano akwarium')
             return
 
-        event_date = self.event_date_edit.dateTime().toPyDateTime()
+        event_date = qDateTime_to_python(self.event_date_edit.dateTime())
         event_type = self.event_type_combo.currentText()
         description = self.event_desc_edit.toPlainText()
 
@@ -529,7 +529,7 @@ class AquariumDetailsWidget(QtWidgets.QWidget):
 
         try:
             inhabitant_type = self.inhabitant_type_combo.currentText()
-            intro_date = self.intro_date_edit.dateTime().toPyDateTime()
+            intro_date = qDateTime_to_python(self.intro_date_edit.dateTime())
             quantity = int(self.quantity_edit.text())
             status_map = {'Aktywny': 'active', 'Padł': 'dead', 'Przeniesiony': 'transferred'}
             status = status_map[self.status_combo.currentText()]
