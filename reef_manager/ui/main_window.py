@@ -3,7 +3,7 @@ Główne okno aplikacji Reef Manager PRO.
 """
 
 from datetime import datetime
-from reef_manager.qt_compat import QtWidgets, QtCore, Signal, qDateTime_to_python
+from reef_manager.qt_compat import QtWidgets, QtCore, Signal, qDateTime_to_python, DialogResult
 
 from reef_manager.db.database import get_database
 from reef_manager.logic.services import AquariumService, BackupService, ExportService
@@ -238,7 +238,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def add_aquarium(self):
         """Dodaje nowe akwarium."""
         dialog = AddAquariumDialog(self)
-        if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
+        if dialog.exec() == DialogResult.Accepted:
             try:
                 data = dialog.get_data()
 
@@ -268,7 +268,7 @@ class MainWindow(QtWidgets.QMainWindow):
         aquarium = self.aquarium_service.get_aquarium(aquarium_id)
 
         dialog = EditAquariumDialog(aquarium, self)
-        if dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted:
+        if dialog.exec() == DialogResult.Accepted:
             try:
                 data = dialog.get_data()
 

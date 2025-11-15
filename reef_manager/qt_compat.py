@@ -46,10 +46,23 @@ def qDateTime_to_python(qdt) -> datetime:
         return qdt.toPython()
 
 
+# Kompatybilność dla Dialog result codes
+# PyQt6: QDialog.DialogCode.Accepted
+# PySide6: QDialog.Accepted (bezpośrednio)
+class DialogResult:
+    """Uniwersalne kody wyniku dialogu - działa z PyQt6 i PySide6."""
+    if QT_API == "PyQt6":
+        Accepted = QtWidgets.QDialog.DialogCode.Accepted
+        Rejected = QtWidgets.QDialog.DialogCode.Rejected
+    else:  # PySide6
+        Accepted = QtWidgets.QDialog.Accepted
+        Rejected = QtWidgets.QDialog.Rejected
+
+
 # Eksportuj wszystko co potrzebne
 __all__ = [
     'QtCore', 'QtGui', 'QtWidgets',
-    'Signal', 'Slot', 'QT_API', 'qDateTime_to_python'
+    'Signal', 'Slot', 'QT_API', 'qDateTime_to_python', 'DialogResult'
 ]
 
 print(f"✓ Używam {QT_API}")
