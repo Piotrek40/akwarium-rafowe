@@ -116,7 +116,7 @@ class EditAquariumDialog(QtWidgets.QDialog):
         self.name_edit.setText(self.aquarium.name)
         self.type_combo.setCurrentText(self.aquarium.aquarium_type)
         self.volume_edit.setText(str(self.aquarium.volume_liters))
-        self.start_date_edit.setDateTime(QtCore.QDateTime(self.aquarium.start_date))
+        self.start_date_edit.setDateTime(QtCore.QtCore.QDateTime(self.aquarium.start_date))
         self.description_edit.setPlainText(self.aquarium.description or '')
 
     def get_data(self):

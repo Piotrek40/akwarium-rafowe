@@ -136,7 +136,7 @@ class AquariumDetailsWidget(QtWidgets.QWidget):
         self.measurements_table.setHorizontalHeaderLabels([
             'Data', 'NO3', 'PO4', 'KH', 'pH', 'Temp', 'Zasolenie', 'NH3/NH4', 'Komentarz', 'Akcje'
         ])
-        self.measurements_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.measurements_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
         layout.addWidget(self.measurements_table)
 
         widget.setLayout(layout)
@@ -197,7 +197,7 @@ class AquariumDetailsWidget(QtWidgets.QWidget):
         self.events_table = QtWidgets.QTableWidget()
         self.events_table.setColumnCount(4)
         self.events_table.setHorizontalHeaderLabels(['Data', 'Typ', 'Opis', 'Akcje'])
-        self.events_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.events_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
         layout.addWidget(self.events_table)
 
         widget.setLayout(layout)
@@ -254,7 +254,7 @@ class AquariumDetailsWidget(QtWidgets.QWidget):
         self.inhabitants_table.setHorizontalHeaderLabels([
             'Gatunek', 'Typ', 'Data wprowadzenia', 'Ilość', 'Status', 'Notatki', 'Akcje'
         ])
-        self.inhabitants_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.inhabitants_table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
         layout.addWidget(self.inhabitants_table)
 
         widget.setLayout(layout)
