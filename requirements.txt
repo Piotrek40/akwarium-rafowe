@@ -1,7 +1,15 @@
 # Reef Manager PRO - Wymagane pakiety Python
 
-# GUI Framework
-PyQt6==6.6.1
+# GUI Framework - wybierz JEDNĄ z opcji poniżej:
+# OPCJA 1 (domyślna): PyQt6 - nowsza wersja
+# PyQt6==6.6.1
+
+# OPCJA 2: PyQt6 - starsza, stabilniejsza wersja (polecana dla Windows 11)
+PyQt6==6.5.0
+
+# OPCJA 3 (alternatywa jeśli PyQt6 nie działa): PySide6
+# UWAGA: Jeśli używasz PySide6, odkomentuj linię poniżej i zakomentuj PyQt6 powyżej
+# PySide6==6.6.0
 
 # Baza danych ORM
 SQLAlchemy==2.0.25
